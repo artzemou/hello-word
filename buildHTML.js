@@ -20,15 +20,16 @@ const generateIndexPage = (articles) => {
     <title>Index des articles</title>
   </head>
   <body>
-    <h1>Liste des articles</h1>
-    <ul>
+    <h1>Le numérique et les sciences</h1>
+    <h2>Liste des articles</h2>
+    <ol>
       ${articles
       .map(
         (article) =>
-          `<li><a href="/${article.slug}.html">${article.title}</a></li>`
+          `<li><a href="./${article.slug}.html">${article.title}</a></li>`
       )
       .join("")}
-    </ul>
+    </ol>
   </body>
   </html>
   `;
@@ -36,7 +37,7 @@ const generateIndexPage = (articles) => {
 };
 
 // Génération des pages d'articles
-const generateArticlePage = (article) => {
+const generateArticlePage = (articles, article) => {
   const content = `
   <!DOCTYPE html>
   <html lang="fr">
@@ -48,7 +49,16 @@ const generateArticlePage = (article) => {
   <body>
     <h1>${article.title}</h1>
     <article>${article.article}</article>
-    <a href="/index.html">Retour à l'index</a>
+    <a href="./index.html">Retour à l'index</a>
+    <ol>
+      ${articles
+      .filter(({ title }) => article.title)
+      .map(
+        (article) =>
+          `<li><a href="./${article.slug}.html">${article.title}</a></li>`
+      )
+      .join("")}
+    </ol>
   </body>
   </html>
   `;
@@ -60,12 +70,12 @@ const generateArticlePage = (article) => {
 };
 
 // Récupération des articles et génération des fichiers
-db.all("SELECT * FROM articles", [], (err, rows) => {
+db.all("SELECT * FROM articles", [], (err, articles) => {
   if (err) {
     console.error("Erreur lors de la récupération des articles :", err.message);
     return;
   }
-  generateIndexPage(rows); // Génération de l'index
-  rows.forEach(generateArticlePage); // Génération des articles
+  generateIndexPage(articles); // Génération de l'index
+  articles.forEach((article) => generateArticlePage(articles, article)); // Génération des articles
   console.log("Pages statiques générées avec succès !");
 });

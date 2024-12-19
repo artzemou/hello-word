@@ -70,7 +70,7 @@ app.post("/addArticle", (req, res) => {
     return res.status(400).send("Les champs 'title' et 'article' sont requis");
   }
 
-  db.run("INSERT INTO articles (title, slug, article) VALUES (?, ?,)", [title, slug, article], function (err) {
+  db.run("INSERT INTO articles (title, slug, article) VALUES (?, ?, ?)", [title, slug, article], function (err) {
     if (err) {
       res.status(500).send("Erreur lors de l'ajout de l'article");
     } else {
