@@ -4,6 +4,10 @@ const path = require("path");
 const app = express();
 const port = 3000;
 
+
+
+
+
 // Middleware pour traiter les données JSON et les données de formulaire
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -70,7 +74,7 @@ app.post("/addArticle", (req, res) => {
     return res.status(400).send("Les champs 'title' et 'article' sont requis");
   }
 
-  db.run("INSERT INTO articles (title, slug, article) VALUES (?, ?,)", [title, slug, article], function (err) {
+  db.run("INSERT INTO articles (title, slug, article) VALUES (?, ?, ?)", [title, slug, article], function (err) {
     if (err) {
       res.status(500).send("Erreur lors de l'ajout de l'article");
     } else {
