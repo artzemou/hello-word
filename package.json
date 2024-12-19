@@ -1,0 +1,15 @@
+{
+  "name": "express-docker-template",
+  "version": "1.0.0",
+  "description": "Serveur Express avec un moteur de template EJS sous Docker",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "build": "node buildHTML.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.7"
+  }
+}
