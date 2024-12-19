@@ -11,6 +11,47 @@ app.use(express.urlencoded({ extended: true }));
 // Servir la page HTML (formulaire)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Route pour afficher un article spécifique par son slug
+app.get("/article/:slug", (req, res) => {
+  const { slug } = req.params;
+  db.get("SELECT * FROM articles WHERE slug = ?", [slug], (err, row) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else if (!row) {
+      res.status(404).send("Article non trouvé");
+    } else {
+      db.all("SELECT * FROM articles", [], (err, rows) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+        } else {
+          // Rendre un fichier HTML de l'article
+          const page = `
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${row.title}</title>
+        </head>
+        <body>
+          <nav>
+            <li><a href="/">Index</a></li>
+            ${rows.map(row => `<li><a href="/article/${row.slug}">${row.title}</a></li>`).join('')}
+          </nav>
+          <main>
+            <h2>${row.title}</h2>
+            <article>${row.article}</article>
+          </main>
+        </body>
+        </html>
+      `;
+          res.send(page); // Envoi de la page HTML dynamique
+        }
+      });
+    }
+  });
+});
+
 app.post("/addArticle", (req, res) => {
   const { title, article } = req.body;
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
