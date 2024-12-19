@@ -11,6 +11,17 @@ app.use(express.urlencoded({ extended: true }));
 // Servir la page HTML (formulaire)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Route pour récupérer tous les articles
+app.get("/articles", (req, res) => {
+  db.all("SELECT * FROM articles", [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
 // Route pour afficher un article spécifique par son slug
 app.get("/article/:slug", (req, res) => {
   const { slug } = req.params;

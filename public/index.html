@@ -18,7 +18,29 @@
     <textarea id="article" name="article"></textarea>
     <input type="submit" value="Envoyer">
   </form>
+  <ul id="articles">
+    <li><a href="/">Index</a></li>
+  </ul>
+  <script>
+    // Récupérer la liste des utilisateurs
+    fetch('/articles')
+      .then(response => response.json())
+      .then(articles => {
+        articles.map(article => {
+          const a = document.createElement("a")
+          a.href = "/article/" + article.slug
+          a.innerHTML = article.title
 
+          const li = document.createElement("li");
+          li.appendChild(a);
+          document.getElementById("articles").appendChild(li);
+        })
+
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+      });
+  </script>
 </body>
 
 </html>
